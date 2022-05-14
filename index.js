@@ -35,40 +35,50 @@ async function run() {
       res.send(inventories);
     });
 
-
-    // specific
+    // Load specific inventory
     app.get("/inventories/:id", async (req, res) => {
-        const id = req.params.id;
-        const query = { _id: ObjectId(id) };
-        const service = await inventoriesCollection.findOne(query);
-        res.send(service);
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const service = await inventoriesCollection.findOne(query);
+      res.send(service);
+    });
+
+
+    // Add items
+
+    app.post("/inventories", async (req, res) => {
+        const newItem = req.body;
+        const result = await inventoriesCollection.insertOne(newItem);
+        res.send(result);
       });
 
-      app.put('/inventories/:id', async(req, res) => {
-        const id = req.params.id;
-        const updatedInventory = req.body.updatedQuantity;
-        console.log(updatedInventory)
-        const filter = {_id: ObjectId(id)};
-        const options = { upsert: true };
-        const updatedDoc = {
-          $set: {
-            Quantity: updatedInventory
-          }
-        };
-        const result = await inventoriesCollection.updateOne(filter, updatedDoc, options);
-        res.send(result);
-      })
-
-      
+    //   update
+    app.put("/inventories/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedInventory = req.body.updatedQuantity;
+      console.log(updatedInventory);
+      const filter = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          Quantity: updatedInventory,
+        },
+      };
+      const result = await inventoriesCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+      res.send(result);
+    });
 
     //   Delete
     app.delete("/inventories/:id", async (req, res) => {
-        const id = req.params.id;
-        const query = { _id: ObjectId(id) };
-        const result = await inventoriesCollection.deleteOne(query);
-        res.send(result);
-      });
-
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await inventoriesCollection.deleteOne(query);
+      res.send(result);
+    });
   } finally {
     // await client.close();
   }
