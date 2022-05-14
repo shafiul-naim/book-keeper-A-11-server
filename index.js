@@ -44,6 +44,23 @@ async function run() {
         res.send(service);
       });
 
+      app.put('/inventories/:id', async(req, res) => {
+        const id = req.params.id;
+        const updatedInventory = req.body.updatedQuantity;
+        console.log(updatedInventory)
+        const filter = {_id: ObjectId(id)};
+        const options = { upsert: true };
+        const updatedDoc = {
+          $set: {
+            Quantity: updatedInventory
+          }
+        };
+        const result = await inventoriesCollection.updateOne(filter, updatedDoc, options);
+        res.send(result);
+      })
+
+      
+
     //   Delete
     app.delete("/inventories/:id", async (req, res) => {
         const id = req.params.id;
