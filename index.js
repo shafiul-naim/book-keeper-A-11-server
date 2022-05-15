@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const { application } = require("express");
 require("dotenv").config();
 
 const app = express();
@@ -39,18 +40,34 @@ async function run() {
     app.get("/inventories/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
-      const service = await inventoriesCollection.findOne(query);
-      res.send(service);
+      const inventory = await inventoriesCollection.findOne(query);
+      res.send(inventory);
     });
 
+    // my items all
+    app.get("/myitems", async (req, res) => {
+      const email = req.query.email;
+      console.log(email);
+      const query = { email: email };
+      const cursor = inventoriesCollection.find(query);
+      const myItems = await cursor.toArray();
+      res.send(myItems);
+    });
+    // my item single
+    app.get("/myitems/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const inventory = await inventoriesCollection.findOne(query);
+      res.send(inventory);
+    });
 
     // Add items
 
     app.post("/inventories", async (req, res) => {
-        const newItem = req.body;
-        const result = await inventoriesCollection.insertOne(newItem);
-        res.send(result);
-      });
+      const newItem = req.body;
+      const result = await inventoriesCollection.insertOne(newItem);
+      res.send(result);
+    });
 
     //   update
     app.put("/inventories/:id", async (req, res) => {
@@ -74,6 +91,14 @@ async function run() {
 
     //   Delete
     app.delete("/inventories/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await inventoriesCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    // my item delete
+    app.delete("/myitems/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const result = await inventoriesCollection.deleteOne(query);
