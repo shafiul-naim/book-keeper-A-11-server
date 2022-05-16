@@ -120,5 +120,4 @@ app.listen(port, () => {
 });
 
 
-// DB_USER=inventoryUser
-// DB_PASS=SEZ1RXUIQ9lID7Fj
+
