@@ -112,7 +112,7 @@ async function run() {
 run().catch(console.dir);
 
 app.get("/", (req, res) => {
-  res.send("Assignment-11 server is running");
+  res.send("Book keeper server is running");
 });
 
 app.listen(port, () => {
